@@ -1,196 +1,115 @@
 import React, { useState, useEffect } from "react";
+import { saveData, loadData } from "./utils/storage";
+import { getWorkouts } from "./utils/workouts";
+import { buildMilestones } from "./utils/milestones";
+import { calculatePlan } from "./utils/calculations";
 
-// Components
 import SetupScreen from "./components/Setup/SetupScreen";
 import WorkoutTab from "./components/Tabs/WorkoutTab";
 import NutritionTab from "./components/Tabs/NutritionTab";
 import ProgressTab from "./components/Tabs/ProgressTab";
 import LifestyleTab from "./components/Tabs/LifestyleTab";
-
-// Utils
-import { loadData, saveData } from "./utils/storage";
-import { calculatePlan } from "./utils/calculations";
-import { getWorkouts } from "./utils/workouts";
-import { buildMilestones } from "./utils/milestones";
-
-// Theme colors
-const C = {
-  orange: "#e07b39",
-  blue: "#3a8fd4",
-  green: "#6ab04c",
-  purple: "#9b59b6",
-  red: "#e74c3c",
-  teal: "#1abc9c",
-  gold: "#f39c12",
-  bg: "#0a0e1a",
-  card: "rgba(255,255,255,0.04)",
-  border: "rgba(255,255,255,0.08)",
-  text: "#e8dcc8",
-  muted: "#6b7280",
-  soft: "#8a7a6a"
-};
+import ProfileTab from "./components/Tabs/ProfileTab";
 
 export default function App() {
-  const [screen, setScreen] = useState("loading"); // loading | setup | main
   const [profile, setProfile] = useState(null);
   const [progress, setProgress] = useState([]);
-  const [activeTab, setActiveTab] = useState("workout");
+  const [tab, setTab] = useState("workout");
+
+  const colors = {
+    orange: "#e07b39",
+    text: "#e8dcc8",
+    soft: "rgba(255,255,255,0.6)",
+    red: "#ff6b6b"
+  };
 
   // Load saved data
   useEffect(() => {
-    (async () => {
-      const p = await loadData("profile");
-      const prog = await loadData("progress");
+    async function load() {
+      const savedProfile = await loadData("profile");
+      const savedProgress = await loadData("progress");
 
-      if (p) setProfile(p);
-      if (prog) setProgress(prog);
-
-      setScreen(p ? "main" : "setup");
-    })();
+      if (savedProfile) setProfile(savedProfile);
+      if (savedProgress) setProgress(savedProgress);
+    }
+    load();
   }, []);
 
   // Save profile
-  async function handleSaveProfile(p) {
-    setProfile(p);
-    await saveData("profile", p);
-    setScreen("main");
+  async function saveProfile(data) {
+    setProfile(data);
+    await saveData("profile", data);
   }
 
   // Save progress entry
-  async function saveProgressEntry(entry) {
-    const updated = [...progress, entry].sort((a, b) =>
-      a.date.localeCompare(b.date)
-    );
+  async function saveProgress(entry) {
+    const updated = [entry, ...progress];
     setProgress(updated);
     await saveData("progress", updated);
   }
 
   // Delete progress entry
-  async function deleteProgressEntry(index) {
+  async function deleteProgress(index) {
     const updated = progress.filter((_, i) => i !== index);
     setProgress(updated);
     await saveData("progress", updated);
   }
 
-  // Loading screen
-  if (screen === "loading") {
-    return (
-      <div
-        style={{
-          background: C.bg,
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: C.orange,
-          fontFamily: "monospace",
-          letterSpacing: 3,
-          fontSize: 18
-        }}
-      >
-        Loading…
-      </div>
-    );
+  // If no profile yet → show setup
+  if (!profile) {
+    return <SetupScreen onSave={saveProfile} />;
   }
 
-  // Setup wizard
-  if (screen === "setup") {
-    return <SetupScreen onSave={handleSaveProfile} />;
-  }
-
-  // Main app calculations
+  // Calculations
   const calc = calculatePlan(profile);
+
+  // Workouts
   const workouts = getWorkouts(profile.gender);
+
+  // Milestones
   const milestones = buildMilestones(calc.weeks, profile.gender);
 
   return (
     <div
       style={{
-        fontFamily: "'Georgia', 'Times New Roman', serif",
-        background: C.bg,
+        background: "#0a0e1a",
         minHeight: "100vh",
-        color: C.text
+        padding: "24px 18px",
+        color: colors.text,
+        fontFamily: "'Georgia','Times New Roman',serif"
       }}
     >
-      {/* HEADER */}
-      <div
-        style={{
-          padding: "22px 18px 16px",
-          textAlign: "center",
-          borderBottom: `1px solid ${C.border}`
-        }}
-      >
-        <div
-          style={{
-            fontSize: 10,
-            letterSpacing: 4,
-            color: C.orange,
-            textTransform: "uppercase",
-            marginBottom: 6
-          }}
-        >
-          FITNESS PLAN AND TRACKER
-        </div>
-
-        <h1
-          style={{
-            margin: 0,
-            fontSize: 22,
-            fontWeight: 700,
-            color: "#f5ede0"
-          }}
-        >
-          {profile.name
-            ? `${profile.name}'s Plan`
-            : `${calc.weeks}-Week Plan`}
-        </h1>
-
-        <p
-          style={{
-            margin: "4px 0 12px",
-            color: C.soft,
-            fontSize: 12,
-            fontStyle: "italic"
-          }}
-        >
-          {profile.weightLbs} lbs → {profile.targetWeightLbs} lbs •{" "}
-          {calc.weeks} Weeks
-        </p>
-      </div>
-
-      {/* TABS */}
+      {/* Tabs */}
       <div
         style={{
           display: "flex",
-          borderBottom: `1px solid ${C.border}`,
-          background: "rgba(255,255,255,0.02)"
+          gap: 10,
+          marginBottom: 20
         }}
       >
         {[
-          ["workout", "Workout"],
+          ["workout", "Workouts"],
           ["nutrition", "Nutrition"],
           ["progress", "Progress"],
-          ["lifestyle", "Lifestyle"]
-        ].map(([id, label]) => (
+          ["lifestyle", "Lifestyle"],
+          ["profile", "Profile"]
+        ].map(([key, label]) => (
           <button
-            key={id}
-            onClick={() => setActiveTab(id)}
+            key={key}
+            onClick={() => setTab(key)}
             style={{
               flex: 1,
-              padding: "12px 6px",
-              background: "none",
-              border: "none",
-              color: activeTab === id ? C.orange : C.muted,
-              fontSize: 12,
-              fontWeight: activeTab === id ? 700 : 400,
-              borderBottom:
-                activeTab === id
-                  ? `2px solid ${C.orange}`
-                  : "2px solid transparent",
+              padding: "10px 0",
+              background:
+                tab === key
+                  ? colors.orange
+                  : "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              color: "#fff",
+              borderRadius: 6,
               cursor: "pointer",
-              transition: "all 0.2s",
-              fontFamily: "inherit",
-              letterSpacing: 1
+              fontWeight: 600,
+              fontSize: 12
             }}
           >
             {label}
@@ -198,41 +117,49 @@ export default function App() {
         ))}
       </div>
 
-      {/* TAB CONTENT */}
-      <div style={{ padding: "18px 16px", maxWidth: 600, margin: "0 auto" }}>
-        {activeTab === "workout" && (
-          <WorkoutTab
-            profile={profile}
-            calc={calc}
-            workouts={workouts}
-            colors={C}
-          />
-        )}
+      {/* Tab Content */}
+      {tab === "workout" && (
+        <WorkoutTab
+          profile={profile}
+          workouts={workouts}
+          colors={colors}
+        />
+      )}
 
-        {activeTab === "nutrition" && (
-          <NutritionTab profile={profile} calc={calc} colors={C} />
-        )}
+      {tab === "nutrition" && (
+        <NutritionTab
+          profile={profile}
+          calc={calc}
+          colors={colors}
+        />
+      )}
 
-        {activeTab === "progress" && (
-          <ProgressTab
-            profile={profile}
-            calc={calc}
-            progress={progress}
-            colors={C}
-            onSave={saveProgressEntry}
-            onDelete={deleteProgressEntry}
-          />
-        )}
+      {tab === "progress" && (
+        <ProgressTab
+          profile={profile}
+          calc={calc}
+          progress={progress}
+          colors={colors}
+          onSave={saveProgress}
+          onDelete={deleteProgress}
+        />
+      )}
 
-        {activeTab === "lifestyle" && (
-          <LifestyleTab
-            profile={profile}
-            calc={calc}
-            milestones={milestones}
-            colors={C}
-          />
-        )}
-      </div>
+      {tab === "lifestyle" && (
+        <LifestyleTab
+          profile={profile}
+          milestones={milestones}
+          colors={colors}
+        />
+      )}
+
+      {tab === "profile" && (
+        <ProfileTab
+          profile={profile}
+          calc={calc}
+          colors={colors}
+        />
+      )}
     </div>
   );
 }
