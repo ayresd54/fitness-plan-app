@@ -1,64 +1,50 @@
-// --- CALCULATE PLAN LOGIC ---
-// All core math for calories, macros, timeline, etc.
+// --- CALCULATIONS ENGINE ---
+// Handles TDEE, calories, macros, weekly loss, and total timeline.
 
 export function calculatePlan(profile) {
   const {
     age,
     gender,
-    weightLbs,
     heightIn,
+    weightLbs,
     targetWeightLbs,
     targetDate
   } = profile;
 
-  // Convert units
-  const weightKg = weightLbs * 0.453592;
   const heightCm = heightIn * 2.54;
+  const weightKg = weightLbs * 0.453592;
 
-  // Mifflin-St Jeor BMR
+  // BMR (Mifflin-St Jeor)
   const bmr =
     gender === "male"
       ? 10 * weightKg + 6.25 * heightCm - 5 * age + 5
       : 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
 
-  // Moderately active multiplier
-  const tdee = Math.round(bmr * 1.55);
+  // Light activity multiplier
+  const tdee = Math.round(bmr * 1.35);
 
-  // Weight loss timeline
-  const lossLbs = weightLbs - targetWeightLbs;
-
-  const weeks = Math.max(
-    4,
-    Math.round(
-      (new Date(targetDate) - new Date()) /
-        (7 * 24 * 60 * 60 * 1000)
-    )
-  );
-
-  // Weekly fat loss (max 2.5 lbs/week)
-  const weeklyLoss = Math.min(2.5, lossLbs / weeks);
-
-  // Daily deficit (500 calories per lb/week)
-  const dailyDeficit = Math.round(weeklyLoss * 500);
-
-  // Calories (never below 1200)
-  const calories = Math.max(1200, tdee - dailyDeficit);
+  // Daily calories for fat loss
+  const calories = Math.round(tdee - 500);
 
   // Macros
-  const protein = Math.round(weightLbs * 0.85); // grams
-  const fat = Math.round((calories * 0.28) / 9); // grams
-  const carbs = Math.round(
-    (calories - protein * 4 - fat * 9) / 4
-  );
+  const protein = Math.round(weightLbs * 0.8);
+  const fat = Math.round((calories * 0.25) / 9);
+  const carbs = Math.round((calories - protein * 4 - fat * 9) / 4);
+
+  // Weekly loss estimate
+  const weeklyLoss = 1; // 500 cal deficit = ~1 lb/week
+
+  // Total weeks
+  const totalLoss = weightLbs - targetWeightLbs;
+  const weeks = Math.max(1, Math.ceil(totalLoss / weeklyLoss));
 
   return {
     tdee,
     calories,
     protein,
-    fat,
     carbs,
-    weeks,
-    weeklyLoss: weeklyLoss.toFixed(1),
-    lossLbs
+    fat,
+    weeklyLoss,
+    weeks
   };
 }
