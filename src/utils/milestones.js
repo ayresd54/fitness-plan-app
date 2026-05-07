@@ -1,45 +1,45 @@
-// --- MILESTONES GENERATOR ---
-// Creates weekly lifestyle milestones based on plan length + gender.
+// --- MILESTONE GENERATOR ---
+// Builds weekly lifestyle milestones based on total weeks + gender.
 
-export function buildMilestones(weeks, gender) {
-  const isMale = gender === "male";
-
-  const base = [
-    "Increase daily water intake",
-    "Hit protein target 5 days this week",
-    "Walk 7,000–10,000 steps daily",
-    "Sleep 7–8 hours consistently",
-    "Limit alcohol to 0–1 servings",
-    "Track meals 5 days this week",
-    "Reduce processed snacks",
-    "Add 10 minutes of stretching",
-    "Stay within calorie target",
-    "Hit all workouts this week"
+export function buildMilestones(totalWeeks, gender) {
+  const baseHabits = [
+    "Hit your protein target 4+ days this week",
+    "Walk at least 7,000 steps per day",
+    "Drink 2–3L of water daily",
+    "Track meals at least 4 days",
+    "Sleep 7+ hours per night"
   ];
 
-  const femaleExtras = [
-    "Focus on glute activation warm-ups",
-    "Prioritize recovery on cycle-sensitive days",
-    "Add 5 minutes of core stability work"
+  const maleHabits = [
+    "Add 5–10 lbs to one major lift",
+    "Increase conditioning intensity slightly",
+    "Focus on posture and core stability"
   ];
 
-  const maleExtras = [
-    "Add 5 minutes of mobility for shoulders",
-    "Reduce late-night eating",
-    "Add 10 minutes of core conditioning"
+  const femaleHabits = [
+    "Prioritize glute activation before lower‑body days",
+    "Add one extra core session this week",
+    "Increase daily steps by 500"
   ];
 
-  const genderList = isMale ? maleExtras : femaleExtras;
+  const genderHabits = gender === "male" ? maleHabits : femaleHabits;
 
   const milestones = [];
 
-  for (let i = 1; i <= weeks; i++) {
-    const pick1 = base[(i - 1) % base.length];
-    const pick2 = genderList[(i - 1) % genderList.length];
+  for (let week = 1; week <= totalWeeks; week++) {
+    const items = [...baseHabits];
+
+    // Add one gender‑specific habit per week, cycling through list
+    items.push(genderHabits[(week - 1) % genderHabits.length]);
+
+    // Add progressive habit every 4 weeks
+    if (week % 4 === 0) {
+      items.push("Review progress and adjust calorie intake if needed");
+    }
 
     milestones.push({
-      week: i,
-      items: [pick1, pick2]
+      week,
+      items
     });
   }
 
