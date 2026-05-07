@@ -1,1 +1,9 @@
-<link rel="manifest" href="/manifest.json" />
+{
+  "short_name": "Fitness",
+  "name": "8-Week Fitness Plan",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#e07b39",
+  "background_color": "#0a0e1a"
+}
