@@ -3,11 +3,10 @@ import React, { useState } from "react";
 export default function WorkoutTab({ profile, workouts, colors }) {
   const [phase, setPhase] = useState("phase1");
 
-  const phaseData = workouts[phase];
+  const phaseData = workouts?.[phase] || [];
 
   return (
     <div>
-      {/* Phase Selector */}
       <div
         style={{
           display: "flex",
@@ -54,7 +53,6 @@ export default function WorkoutTab({ profile, workouts, colors }) {
         </button>
       </div>
 
-      {/* Workout List */}
       {phaseData.map((day, index) => (
         <div
           key={index}
@@ -77,9 +75,8 @@ export default function WorkoutTab({ profile, workouts, colors }) {
           </h3>
 
           <ul style={{ paddingLeft: 18, margin: 0 }}>
-            {day.exercises.map((ex, i) => (
-              <li
-                key={i}
+            {day.exercises?.map((ex, i) => (
+              
                 style={{
                   marginBottom: 6,
                   fontSize: 14,
