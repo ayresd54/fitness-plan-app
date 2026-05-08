@@ -1,111 +1,65 @@
 import React from "react";
 
 export default function NutritionTab({ profile, calc, colors }) {
+  if (!profile || !calc) return null;
+
+  const boxStyle = {
+    background: "rgba(255,255,255,0.05)",
+    padding: "18px 20px",
+    borderRadius: 8,
+    marginBottom: 20
+  };
+
+  const rowStyle = {
+    marginBottom: 10,
+    fontSize: 14
+  };
+
   return (
     <div>
-      {/* Calories Card */}
-      <div
-        style={{
-          background: "rgba(255,255,255,0.04)",
-          border: "1px solid rgba(255,255,255,0.08)",
-          padding: "18px 20px",
-          borderRadius: 8,
-          marginBottom: 20
-        }}
-      >
-        <h3
-          style={{
-            margin: "0 0 10px",
-            fontSize: 16,
-            color: colors.orange
-          }}
-        >
-          Daily Calories
-        </h3>
+      <h2 style={{ color: colors.orange, marginBottom: 20 }}>
+        Daily Nutrition Targets
+      </h2>
 
-        <p
-          style={{
-            margin: 0,
-            fontSize: 28,
-            fontWeight: 700,
-            color: "#f5ede0"
-          }}
-        >
-          {calc.calories}
-        </p>
-
-        <p
-          style={{
-            marginTop: 6,
-            fontSize: 12,
-            color: colors.soft
-          }}
-        >
-          Based on your TDEE of {calc.tdee} calories/day
-        </p>
-      </div>
-
-      {/* Macros Card */}
-      <div
-        style={{
-          background: "rgba(255,255,255,0.04)",
-          border: "1px solid rgba(255,255,255,0.08)",
-          padding: "18px 20px",
-          borderRadius: 8,
-          marginBottom: 20
-        }}
-      >
-        <h3
-          style={{
-            margin: "0 0 10px",
-            fontSize: 16,
-            color: colors.orange
-          }}
-        >
-          Daily Macros
-        </h3>
-
-        <div style={{ marginBottom: 10 }}>
-          <strong>Protein:</strong>{" "}
-          <span style={{ color: colors.text }}>{calc.protein}g</span>
+      <div style={boxStyle}>
+        <div style={rowStyle}>
+          <strong>Calories:</strong> {calc.calories} kcal/day
         </div>
-
-        <div style={{ marginBottom: 10 }}>
-          <strong>Carbs:</strong>{" "}
-          <span style={{ color: colors.text }}>{calc.carbs}g</span>
+        <div style={rowStyle}>
+          <strong>Protein:</strong> {calc.protein} g/day
         </div>
-
-        <div>
-          <strong>Fat:</strong>{" "}
-          <span style={{ color: colors.text }}>{calc.fat}g</span>
+        <div style={rowStyle}>
+          <strong>Carbs:</strong> {calc.carbs} g/day
+        </div>
+        <div style={rowStyle}>
+          <strong>Fat:</strong> {calc.fat} g/day
         </div>
       </div>
 
-      {/* Guidance */}
-      <div
-        style={{
-          background: "rgba(255,255,255,0.03)",
-          border: "1px solid rgba(255,255,255,0.06)",
-          padding: "16px 18px",
-          borderRadius: 8,
-          color: colors.soft,
-          fontSize: 14,
-          lineHeight: 1.5
-        }}
-      >
-        <p style={{ marginTop: 0 }}>
-          Aim to hit your <strong>protein target</strong> daily — this is the
-          most important macro for fat loss and muscle retention.
-        </p>
+      <h3 style={{ color: colors.orange, marginBottom: 10 }}>
+        Weekly Fat Loss Estimate
+      </h3>
 
-        <p>
-          Carbs and fats can be flexible as long as you stay within your calorie
-          target.
-        </p>
+      <div style={boxStyle}>
+        <div style={rowStyle}>
+          <strong>Weekly Loss:</strong> {calc.weeklyLoss} lb/week
+        </div>
+        <div style={rowStyle}>
+          <strong>Total Weeks:</strong> {calc.weeks}
+        </div>
+      </div>
 
-        <p style={{ marginBottom: 0 }}>
-          Track your meals 4–6 days per week for best results.
-        </p>
+      <h3 style={{ color: colors.orange, marginBottom: 10 }}>
+        Tips for Success
+      </h3>
+
+      <div style={boxStyle}>
+        <ul style={{ paddingLeft: 20, lineHeight: 1.6 }}>
+          <li>Hit your protein target daily</li>
+          <li>Drink 2–3L of water per day</li>
+          <li>Track meals at least 4 days per week</li>
+          <li>Stay within ±100 calories of your target</li>
+        </ul>
       </div>
     </div>
   );
