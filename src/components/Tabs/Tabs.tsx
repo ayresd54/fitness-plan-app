@@ -3,7 +3,7 @@ import LifestyleTab from "./LifestyleTab";
 import NutritionTab from "./NutritionTab";
 import ProfileTab from "./ProfileTab";
 import ProgressTab from "./ProgressTab";
-import WorkoutsTab from "./WorkoutsTab";
+import WorkoutTab from "./WorkoutTab";
 
 export default function Tabs() {
   const [activeTab, setActiveTab] = useState("lifestyle");
@@ -19,7 +19,7 @@ export default function Tabs() {
       case "progress":
         return <ProgressTab />;
       case "workouts":
-        return <WorkoutsTab />;
+        return <WorkoutTab />;
       default:
         return <LifestyleTab />;
     }
@@ -32,4 +32,10 @@ export default function Tabs() {
         <button onClick={() => setActiveTab("nutrition")}>Nutrition</button>
         <button onClick={() => setActiveTab("profile")}>Profile</button>
         <button onClick={() => setActiveTab("progress")}>Progress</button>
-        <button onClick={() => setActiveTab("workouts")}>Workouts
+        <button onClick={() => setActiveTab("workouts")}>Workouts</button>
+      </div>
+
+      <div className="tab-content">{renderTab()}</div>
+    </div>
+  );
+}
