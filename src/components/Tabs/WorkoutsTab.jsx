@@ -4,6 +4,8 @@ export default function WorkoutTab({ profile, workouts, colors }) {
   const [phase, setPhase] = useState("phase1");
 
   const phaseData = workouts?.[phase] || [];
+  const orange = colors?.orange || "#f97316";
+  const text = colors?.text || "#ffffff";
 
   return (
     <div>
@@ -21,7 +23,7 @@ export default function WorkoutTab({ profile, workouts, colors }) {
             padding: "10px 0",
             background:
               phase === "phase1"
-                ? colors.orange
+                ? orange
                 : "rgba(255,255,255,0.05)",
             border: "1px solid rgba(255,255,255,0.1)",
             color: "#fff",
@@ -40,7 +42,7 @@ export default function WorkoutTab({ profile, workouts, colors }) {
             padding: "10px 0",
             background:
               phase === "phase2"
-                ? colors.orange
+                ? orange
                 : "rgba(255,255,255,0.05)",
             border: "1px solid rgba(255,255,255,0.1)",
             color: "#fff",
@@ -68,7 +70,7 @@ export default function WorkoutTab({ profile, workouts, colors }) {
             style={{
               margin: "0 0 10px",
               fontSize: 16,
-              color: colors.orange
+              color: orange
             }}
           >
             {day.day}
@@ -76,11 +78,12 @@ export default function WorkoutTab({ profile, workouts, colors }) {
 
           <ul style={{ paddingLeft: 18, margin: 0 }}>
             {day.exercises?.map((ex, i) => (
-              
+              <li
+                key={i}
                 style={{
                   marginBottom: 6,
                   fontSize: 14,
-                  color: colors.text
+                  color: text
                 }}
               >
                 {ex}
