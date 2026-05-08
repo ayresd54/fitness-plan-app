@@ -1,5 +1,11 @@
 import React from "react";
 
+const rowStyle = {
+  margin: "6px 0",
+  fontSize: 14,
+  color: "rgba(255,255,255,0.85)"
+};
+
 export default function ProfileTab({ profile, calc, colors }) {
   return (
     <div>
@@ -97,4 +103,9 @@ export default function ProfileTab({ profile, calc, colors }) {
         </p>
 
         <p style={rowStyle}>
-          <strong>Total Weeks:</strong>
+          <strong>Total Weeks:</strong> {calc.weeks}
+        </p>
+      </div>
+    </div>
+  );
+}
