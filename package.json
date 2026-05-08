@@ -2,14 +2,10 @@
   "name": "fitness-plan-app",
   "version": "1.0.0",
   "private": true,
-  "engines": {
-    "node": "24.x"
-  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "lint": "eslint src --ext .js,.jsx,.ts,.tsx"
+    "preview": "vite preview"
   },
   "dependencies": {
     "react": "^18.2.0",
