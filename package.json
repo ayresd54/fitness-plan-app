@@ -10,6 +10,8 @@
   "build": "vite build",
   "preview": "vite preview",
   "lint": "eslint src --ext .js,.jsx,.ts,.tsx"
+  "prebuild": "node scripts/check-truncation.js"
+
 }}
 
   "dependencies": {
