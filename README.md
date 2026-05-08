@@ -47,5 +47,5 @@ Collects:
 
 ---
 
-## 📁 Folder Structure
+## 📁 Folder Structure 
 
