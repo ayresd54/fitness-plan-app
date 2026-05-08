@@ -64,3 +64,4 @@ export default function NutritionTab({ profile, calc, colors }) {
     </div>
   );
 }
+ 
