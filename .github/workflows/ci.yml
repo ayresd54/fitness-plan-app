@@ -25,5 +25,8 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Check for truncated files
+        run: npm run prebuild
+
       - name: Build
         run: npm run build
