@@ -5,7 +5,7 @@ import { buildMilestones } from "./utils/milestones";
 import { calculatePlan } from "./utils/calculations";
 
 import SetupScreen from "./components/setup/SetupScreen";
-import WorkoutTab from "./components/Tabs/WorkoutTab";
+import WorkoutTab from "./components/Tabs/WorkoutsTab";
 import NutritionTab from "./components/Tabs/NutritionTab";
 import ProgressTab from "./components/Tabs/ProgressTab";
 import LifestyleTab from "./components/Tabs/LifestyleTab";
